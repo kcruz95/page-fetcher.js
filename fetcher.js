@@ -1,25 +1,18 @@
-const request = require("request"); //external files
+const request = require('request');
 const fs = require("fs");
 
-//then internal files
+const path = process.argv[3];
+const domain = process.argv[2];
 
-const url = process.argv[2];
-const filePath = process.argv[3];
-
-function fetch(url, filePath) {
-  request(url, (error, response, body) => {
+request(domain, (error, response, body) => {
+  if (error) {
+    console.log(`Error: ${error}`);
+  }
+  fs.writeFile(`${path}`, body, function(error) {
     if (error) {
-      console.log(`Error: ${error}`)
-      return;
+      console.log(`Error: ${error}`);
+    } else {
+      console.log(`Downloaded and saved ${response.headers} bytes to ${path}`);
     }
-    fs.writeFile(filePath, body, (error) => {
-      if (error) {
-        console.log("Failed to write");
-      } else {
-        console.log(`Downloaded and saved ${body.length} bytes to ${filePath}`);
-      }
-    })
-  }) 
-}
-
-fetch(url, filePath);
+  });
+});
